@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\v1\Manager;
+namespace App\Http\Requests\Api\v1\Manager;
 
 use App\Rules\ValidMobile;
 use Illuminate\Foundation\Http\FormRequest;

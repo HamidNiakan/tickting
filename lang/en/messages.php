@@ -11,4 +11,9 @@ return [
 		'destroy' => 'user has been deleted successfully'
 	],
 	
+	'ticket' => [
+		'store' => 'ticket has been created successfully',
+		'store_ticket_replay' => 'ticket Replay has been created successfully',
+	],
+	
 ];
