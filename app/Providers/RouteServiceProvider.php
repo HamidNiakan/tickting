@@ -37,12 +37,12 @@ class RouteServiceProvider extends ServiceProvider
 			
 			// manager route api
 			Route::middleware(['api'])
-				->prefix('api/manager')
+				->prefix('api/v1/manager')
 				->name('api.manager.')
 				->group(base_path('routes/api/v1/manager/api.php'));
 			
 			Route::middleware(['api'])
-				->prefix('api/user')
+				->prefix('api/v1/user')
 				->name('api.user.')
 				->group(base_path('routes/api/v1/user/api.php'));
 

@@ -14,5 +14,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
+	$collection = \Illuminate\Support\Facades\DB::table('user_tickets')
+		->select('ticket_id', DB::raw('count(*) as total,user_id'))
+		  ->groupBy('user_id')->get();
+	
+	
+	$min = $collection->sortBy('total')->first();
+	dd($collection,$min);
     return view('welcome');
 });

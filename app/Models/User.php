@@ -45,4 +45,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+	
+	
+	public function assginTickets() {
+		return $this->belongsToMany(Ticket::class,'user_tickets','user_id','ticket_id');
+	}
 }

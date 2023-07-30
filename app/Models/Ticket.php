@@ -36,4 +36,8 @@ class Ticket extends Model
 	public function ticketReplies() {
 		return $this->hasMany(TicketReply::class);
 	}
+	
+	public function assginEmployeese() {
+		return $this->belongsToMany(User::class,'user_tickets','ticket_id','user_id');
+	}
 }

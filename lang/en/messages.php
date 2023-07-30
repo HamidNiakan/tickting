@@ -16,4 +16,8 @@ return [
 		'store_ticket_replay' => 'ticket Replay has been created successfully',
 	],
 	
+	'answer-ticket' => [
+		'message' => 'به تیکت شما پاسخ داد شد.'
+	]
+	
 ];
