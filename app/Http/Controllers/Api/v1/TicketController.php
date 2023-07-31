@@ -13,6 +13,7 @@ use App\Http\Resources\v1\TicketResource;
 use App\Jobs\SendEmailJob;
 use App\Jobs\SendSms;
 use App\Mail\SendEmail;
+use App\Models\Ticket;
 use App\Models\User;
 use App\Notifications\TicketAnswered;
 use App\Repositories\Ticket\TicketRepositoryInterFace;
@@ -27,9 +28,32 @@ class TicketController extends Controller
 
    }
 
-   public function index() {
-
+   public function getUserTickets() {
+	   $user = $this->getAuthUser();
+	   $tickets = collect();
+	   if ($user) {
+		   $tickets = $this->repository->index($user);
+	   }
+	   $tickets = TicketResource::collection($tickets);
+	   return response()->json(['data' => $tickets]);
    }
+	public function getAllTicket() {
+		$admin = $this->getAdminUser();
+		if ($admin) {
+			$tickets = $this->repository->index($admin);
+		}
+		$tickets = TicketResource::collection($tickets);
+		return response()->json(['data' => $tickets]);
+	}
+	
+	public function getEmployeeTicket() {
+		$user = $this->getEmployeeTicket();
+		if ($user) {
+			$tickets = $this->repository->index($user);
+		}
+		$tickets = TicketResource::collection($tickets);
+		return response()->json(['data' => $tickets]);
+	}
 
    public function createTicket(CreateRequest  $request) {
 	  $data = $request->toArray();
@@ -115,7 +139,13 @@ class TicketController extends Controller
 
 	protected function getAdminUser() {
 		return User::query()
-				   ->role(UserRoleEnums::User->value)
+				   ->role(UserRoleEnums::Manager->value)
+				   ->first();
+	}
+	
+	protected function getEmployee() {
+		return User::query()
+				   ->role(UserRoleEnums::Employee->value)
 				   ->first();
 	}
 

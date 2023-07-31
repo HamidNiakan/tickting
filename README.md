@@ -7,6 +7,27 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+
+## Basic Usage
+```bash
+php artisan migrate:fresh --seed
+```
+## Testing
+```bash
+./vendor/bin/phpunit 
+```
+
+
+## Middleware
+```bash
+Route::middleware(['api','admin'])
+    ->prefix('api/v1/manager')
+    ->name('api.manager.')
+    ->group(base_path('routes/api/v1/manager/api.php'));
+```
+# Notes
+
+when put ```admin``` middleware in route group  if user has admin access , the user can access the routes otherwise not access
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

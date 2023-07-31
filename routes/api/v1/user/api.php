@@ -4,9 +4,11 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::controller(TicketController::class)
+	->prefix('ticket')
+	->name('ticket.')
 	->group(function () {
-		Route::get('index','index')->name('index');
-		Route::post('create/ticket','createTicket')->name('create-ticket');
-		Route::get('getTicket','findTicket')->name('find-ticket');
+		Route::get('','getUserTickets')->name('get-user-tickets');
+		Route::post('create/ticket','createTicket')->name('create');
+		Route::get('getTicket','findTicket')->name('find');
 		Route::post('create/ticket/replay','createTicketReplay')->name('create.ticket.replay');
 	});

@@ -2,17 +2,34 @@
 
 namespace App\Repositories\Ticket;
 use App\Enums\Ticket\TicketStatusEnums;
+use App\Enums\UserRoleEnums;
 use App\Exceptions\AlreadyTicketByClosedException;
 use App\Exceptions\InvalidStatusTicketException;
 use App\Exceptions\UserIdMissingException;
 use App\Models\Ticket;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class TicketRepository implements TicketRepositoryInterFace {
-	public function index (): Collection {
-		// TODO: Implement index() method.
+	public function index (User $user): Collection {
+		$query = $this->getQuery()
+			->with([
+				'user',
+				'ticketReplies'
+			]);
+		if ($user->hasRole(UserRoleEnums::User->value)) {
+			$query = $query->where('user_id',$user->id);
+		}
+		
+		if ($user->hasRole(UserRoleEnums::Employee->value)) {
+			dd($user);
+			$query = $query->whereHas('assginEmployeese', function ($qry) use($user) {
+				$qry->where('user_id',$user->id);
+			});
+		}
+		return $query->latest()->get();
 	}
 	
 	public function createTicket ( array $data, int $userId ): Model {

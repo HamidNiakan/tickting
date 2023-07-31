@@ -5,12 +5,12 @@ use App\Enums\UserRoleEnums;
 use App\Models\User;
 
 trait TestingUser {
-	public function createUser(string $mobile,string $password) {
+	public function createUser(string $mobile,string $password,string $userRole = 'user') {
 		$user = User::factory()
 					->setMobile($mobile)
 					->setPassword($password)
 					->create();
-		$user->assignRole(UserRoleEnums::User->value);
+		$user->assignRole($userRole);
 		return $user;
 	}
 	

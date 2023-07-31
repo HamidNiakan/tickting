@@ -1,13 +1,14 @@
 <?php
 
 namespace App\Repositories\Ticket;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 interface TicketRepositoryInterFace {
 	
-	public function index():Collection;
+	public function index(User $user):Collection;
 	
 	public function createTicket(array $data,int $userId):Model;
 	

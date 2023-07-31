@@ -33,7 +33,7 @@ class TicketControllerTest extends TestCase
      */
     public function testValidation(): void
     {
-		$this->post(route('api.user.create-ticket'),[
+		$this->post(route('api.user.ticket.create'),[
 			'message' => null,
 			'title' => null,
 			'priority' => null
@@ -49,7 +49,7 @@ class TicketControllerTest extends TestCase
     }
 
 	public function testUserCannotLoginForSendigTicket() {
-		$this->post(route('api.user.create-ticket'),[
+		$this->post(route('api.user.ticket.create'),[
 			'message' => "test",
 			'title' => "test",
 			'priority' => TicketPriorityEnums::High->value,
@@ -62,7 +62,7 @@ class TicketControllerTest extends TestCase
 
 	public function testCreateTicket() {
 		$user = $this->createUser('09178223030','12345678');
-		$response = $this->post(route('api.user.create-ticket'),[
+		$response = $this->post(route('api.user.ticket.create'),[
 			'message' => "test",
 			'title' => "test",
 			'priority' => TicketPriorityEnums::High->value,
@@ -84,18 +84,18 @@ class TicketControllerTest extends TestCase
 	}
 
 	public function testGetTicketById() {
-		$this->json('Get',route('api.user.find-ticket',['ticket_id' => 111]))
+		$this->json('Get',route('api.user.ticket.find',['ticket_id' => 111]))
 		->assertStatus(404);
 		$user = $this->createUser('09178223030','12345678');
 		$ticket = $this->createTicket($user->id,TicketStatusEnums::Open,TicketPriorityEnums::High);
 		$ticket = TicketResource::make($ticket);
-		$response = $this->json('Get',route('api.user.find-ticket',['ticket_id' => $ticket->id]));
+		$response = $this->json('Get',route('api.user.ticket.find',['ticket_id' => $ticket->id]));
 		$this->assertEquals(json_decode($ticket->response()->getContent(), true), $response->json());
 	}
 
 
 	public function testValidationCreateTicketReplay () {
-		$this->post(route('api.user.create.ticket.replay'),[
+		$this->post(route('api.user.ticket.create.ticket.replay'),[
 			'message' => null,
 			'user_id'=> null,
 			'ticket_id' => null
@@ -111,7 +111,7 @@ class TicketControllerTest extends TestCase
 	public function testCreateTicketReplayWhenUserCannotLogin () {
 		$user = $this->createUser('09178223030','12345678');
 		$ticket = $this->createTicket($user->id,TicketStatusEnums::Open,TicketPriorityEnums::High);
-		$this->post(route('api.user.create.ticket.replay'),[
+		$this->post(route('api.user.ticket.create.ticket.replay'),[
 			'message' => fake()->name(),
 			'user_id'=> null,
 			'ticket_id' => $ticket->id
@@ -125,7 +125,7 @@ class TicketControllerTest extends TestCase
 	public function testCreateTicketReplayWhenTicketIsClosed () {
 		$user = $this->createUser('09178223030','12345678');
 		$ticket = $this->createTicket($user->id,TicketStatusEnums::Closed,TicketPriorityEnums::High);
-		$this->post(route('api.user.create.ticket.replay'),[
+		$this->post(route('api.user.ticket.create.ticket.replay'),[
 			'message' => fake()->name(),
 			'user_id'=> $user->id,
 			'ticket_id' => $ticket->id
@@ -139,7 +139,7 @@ class TicketControllerTest extends TestCase
 	public function testCreateTicketReplay() {
 		$user = $this->createUser('09178223030','12345678');
 		$ticket = $this->createTicket($user->id,TicketStatusEnums::Open,TicketPriorityEnums::High);
-		$response = $this->post(route('api.user.create.ticket.replay'),[
+		$response = $this->post(route('api.user.ticket.create.ticket.replay'),[
 			'message' => fake()->name(),
 			'user_id'=> $user->id,
 			'ticket_id' => $ticket->id
@@ -155,6 +155,26 @@ class TicketControllerTest extends TestCase
 				$json->missing('data.password');
 			});
 		$this->assertTicketReplay($response['data']['ticketReplies'],$ticket->id);
+	}
+	
+	
+	public function testShowUserTickets()
+	{
+		$user = $this->createUser('09178223030','12345678');
+		$tickets = $this->createTickets($user->id,TicketStatusEnums::Open,TicketPriorityEnums::High, 5);
+		$tickets = TicketResource::collection($tickets);
+		$response = $this->json('Get',route('api.user.ticket.get-user-tickets'));
+		$this->assertEquals(json_decode($tickets->response()->getContent(), true), $response->json());
+	}
+	
+	public function testAllTickets()
+	{
+		$this->createUser('09178223031','12345678','manager');
+		$user = $this->createUser('09178223030','12345678');
+		$tickets = $this->createTickets($user->id,TicketStatusEnums::Open,TicketPriorityEnums::High, 5);
+		$tickets = TicketResource::collection($tickets);
+		$response = $this->json('Get',route('api.manager.ticket.get-all-ticket'));
+		$this->assertEquals(json_decode($tickets->response()->getContent(), true), $response->json());
 	}
 
 	protected function assertTicketReplay(array $array,$id) {
