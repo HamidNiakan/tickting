@@ -64,7 +64,7 @@ class UserController extends Controller
 			return printResult([],__('messages.user.destroy'));
 		} catch (ModelNotFoundException $exception) {
 			$messages = __('messages.global.error');
-			return printResult([],$messages);
+			return printResult([],$messages,404);
 		}
 	}
 }

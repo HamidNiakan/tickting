@@ -181,10 +181,10 @@ class UserControllerTest extends TestCase
 
 
     public function testDestroy() {
-        $this->json('DELETE',route('api.manager.destroy',['userId' => 111]))
+        $this->delete(route('api.manager.destroy',['userId' => 111]))
 			->assertStatus(404);
         $user = $this->createUser('09178223030','12345678');
-        $this->json('DELETE',route('api.manager.destroy',['userId' => $user->id]));
+        $this->delete(route('api.manager.destroy',['userId' => $user->id]));
         $this->assertTrue(true);
 
     }
